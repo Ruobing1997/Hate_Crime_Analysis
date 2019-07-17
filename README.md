@@ -69,5 +69,5 @@ And after these steps, we are good to go!
 
 ## Authors
 
-* **Ruobing Wang** - *Initial work* - [Ruobing Wang's website](ruobingw.com)
+* **Ruobing Wang** - *Initial work* - [Ruobing Wang's website](https://github.com/wang8063)
 
