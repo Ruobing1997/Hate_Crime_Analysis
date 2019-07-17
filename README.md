@@ -49,7 +49,7 @@ TBD...
 
 We will mainly use R studio and the version of R for this project is 3.6.0. And use the packages of tidyverse, tidycensus and ggplot
 
-```
+```r
 library(tidyverse)
 library(tidycensus)
 library(ggplot)
@@ -59,7 +59,7 @@ These are all the packages for this project you can install in this way:
 
 ### Installing
 
-```
+```r
 install.packages("tidyverse")
 install.packages("tidycensus")
 install.packages("ggplot")
