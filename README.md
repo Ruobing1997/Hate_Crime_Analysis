@@ -1,5 +1,5 @@
 # DPSS_Summer_Capstone
-
+[UChicago Harris](https://github.com/wang8063/DPSS_Summer_Capstone/blob/master/IMAGES/DPSS.png)
   This is the capstone of DPSS in 2019 about Hate Crime in USA which is designed by Daniel Snow
 
 ## Main Purpose 
@@ -36,6 +36,7 @@ In this project, you can expenct to see how I answer the following questions:
   * [GINI index](https://factfinder.census.gov/bkmk/table/1.0/en/ACS/17_1YR/B19083/0100000US.04000)
   * [Pct. of pop. that is non-citizen](https://www.kff.org/a4327ef/)
   * [Avg. annual hate crimes per 100k pop.](https://ucr.fbi.gov/hate-crime/2017/topic-pages/jurisdiction)
+  
   And then combine these variables to one dataframe.
 
 ## Explortary Data Analysis
