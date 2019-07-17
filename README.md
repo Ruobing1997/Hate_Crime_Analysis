@@ -1,5 +1,7 @@
 # DPSS_Summer_Capstone
-[UChicago Harris](https://github.com/wang8063/DPSS_Summer_Capstone/blob/master/IMAGES/DPSS.png)
+
+![UChicago Harris](https://github.com/wang8063/DPSS_Summer_Capstone/blob/master/IMAGES/DPSS.png)
+  
   This is the capstone of DPSS in 2019 about Hate Crime in USA which is designed by Daniel Snow
 
 ## Main Purpose 
