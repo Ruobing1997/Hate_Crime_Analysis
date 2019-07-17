@@ -1,0 +1,233 @@
+---
+title: "Capstone"
+author: "Ruobing Wang"
+date: "2019/7/15"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load ACS data}
+#loading acs data
+library(tidycensus)
+library(tidyverse)
+var <- load_variables(2016,"acs5")
+table2016 <- get_acs(
+  geography = "state",
+  year = 2016,
+  variables = c(total = "B01001_001",
+                unemploy = "B23025_005",
+                HSonly = "B15003_017",
+                white_poverty = "B17001A_002",
+                white_pop = "B01001A_001",
+                med_income = "B06011_001"),
+  geometry = TRUE,
+  shift_geo = TRUE) %>% 
+  select(-moe) %>% 
+    spread(variable, estimate) %>% 
+    group_by(HSonly) %>% 
+    mutate(not_white = total- white_pop) %>% 
+    select(GEOID, NAME,unemploy,HSonly,white_poverty,white_pop,med_income,not_white,total,geometry)
+
+table_rate <- table2016 %>% 
+  mutate(umemploy_rate = unemploy/total,
+         HSonly_rate = HSonly/total,
+         whitepo_rate = white_poverty/total,
+         whitepop_rate  = white_pop/total,
+         notwhite_rate = not_white/total)
+
+
+```
+
+```{r}
+# Loading GINI index:
+
+gini <- read_csv("ACS_17_1YR_B19083/ACS_17_1YR_B19083_with_ann.csv", skip = 1)
+
+```
+
+```{r}
+#loading non citizen dataset:
+
+non_citizen <- read_csv("/Users/wangruobing/Desktop/caps/raw_data.csv", skip = 2)
+non_citizen_rate <- non_citizen %>% 
+  mutate(non_civ_rate = `Non-Citizen`/Total)
+
+```
+
+```{r}
+#loading the Hate Crime data:
+
+Hate <- read_csv("/Users/wangruobing/Desktop/caps/table_12_Agency_Hate_Crime_Reporting_by_State_2017.csv", skip = 2) %>% 
+  select(c(-X6,-X7,-X8))
+Hate_rate <- Hate %>% 
+  mutate(hate_rate = (`Total
+number of
+incidents
+reported`/`Population
+covered`)*100000) %>% 
+  filter(`Participating state` != "District of Columbia")
+```
+
+```{r}
+#combine datasets:
+
+final <- table_rate %>% left_join(gini, by = c("NAME"= "Geography")) %>% 
+  left_join(Hate_rate, by = c("NAME" = "Participating state")) %>% 
+  left_join(non_citizen_rate, by = c("NAME" = "Location")) %>% 
+  select(-Footnotes)
+
+```
+
+```{r}
+#Plotting
+ggplot()+
+  geom_sf(data = final, aes(color = hate_rate, fill = hate_rate))+
+  scale_color_distiller(palette = "Spectral", guide = FALSE)+
+  scale_fill_distiller(palette = "Spectral",name = "Avg. Thefts\nPer Capita\nPer Year")+
+  theme_void()+
+  labs(title = "Hate Crime in USA (2017)",
+       subtitle = "Avg annual hate crime per 100k residents")
+
+
+
+```
+
+Extract the highest hate crimes:
+
+```{r}
+final %>% group_by(hate_rate) %>%
+arrange(desc(hate_rate)) %>% 
+head(5) -> top5Hate
+
+final %>% group_by(hate_rate) %>%
+arrange(hate_rate) %>% 
+head(5) -> low5Hate
+
+par(mfrow = c(2,2))
+
+ggplot(top5Hate, aes(NAME, hate_rate, fill =hate_rate )) + geom_col(show.legend = FALSE) + xlab("State") + ylab("Average Hate Crimes") + ggtitle("Highest Average Annual Hate Crimes")
+
+ggplot(low5Hate, aes(NAME, hate_rate, fill =hate_rate )) + geom_col(show.legend = FALSE) + xlab("State") + ylab("Average Hate Crimes") + ggtitle("Lowest Average Annual Hate Crimes")
+
+```
+
+```{r warning=FALSE, message=FALSE}
+# loading data from 2012 - 2015
+library(sf)
+table <- final %>% st_set_geometry(NULL) %>% mutate(year = 2016)
+j = 12
+for (i in c(2012:2015)){
+  table_all <- get_acs(
+  geography = "state",
+  year = i,
+  variables = c(total = "B01001_001",
+                unemploy = "B23025_005",
+                HSonly = "B15003_017",
+                white_poverty = "B17001A_002",
+                white_pop = "B01001A_001",
+                med_income = "B06011_001")) %>% 
+  select (-moe) %>%
+    spread(variable, estimate) %>% 
+    group_by(HSonly) %>% 
+    mutate(not_white = total- white_pop) %>% 
+    select(GEOID, NAME,unemploy,HSonly,white_poverty,white_pop,med_income,not_white,total) 
+
+table_all <- table_all %>% 
+  mutate(umemploy_rate = unemploy/total,
+         HSonly_rate = HSonly/total,
+         whitepo_rate = white_poverty/total,
+         whitepop_rate  = white_pop/total,
+         notwhite_rate = not_white/total,
+         year = i)
+
+Hate <- read_csv(paste0("/Users/wangruobing/Desktop/caps/table_12_agency_hate_crime_reporting_by_state_",i,".csv"),skip = 2)
+Hate_rate <- Hate %>% 
+  mutate(hate_rate = (`Total
+number of
+incidents
+reported`/`Population
+covered`)*100000) %>% 
+  filter(`Participating state` != "District of Columbia")
+
+gini <- read_csv(paste0("/Users/wangruobing/Desktop/caps/ACS_",j,"_1YR_B19083_with_ann.csv"), skip = 1)
+
+j = j + 1
+
+
+non_citizen <- read_csv(paste0("/Users/wangruobing/Desktop/caps/raw_data_",i,".csv"), skip = 3)
+non_citizen_rate <- non_citizen %>% 
+  mutate(non_civ_rate = `Non-Citizen`/Total)
+
+table_all <- table_all %>%
+  left_join(gini, by = c("NAME"= "Geography")) %>% 
+  left_join(Hate_rate, by = c("NAME" = "Participating state"))  %>% 
+  left_join(non_citizen_rate, by = c("NAME" = "Location")) %>% 
+  select(-Footnotes)
+
+table <- bind_rows(table,table_all)
+
+}
+
+table <- table %>% select(-X6,-X7,-X8,-X9) %>% filter(NAME!="District of Columbia")
+```
+
+Hate Crime data from 2008- 2017:
+
+```{r warining=FALSE, message=FALSE}
+
+Hate_from_2008 <- tibble()
+for (i in c(2008:2017)){
+  Hate <- read_csv(paste0("/Users/wangruobing/Desktop/caps/table_12_agency_hate_crime_reporting_by_state_",i,".csv"),skip = 3,col_names = FALSE)
+  
+  Hate <- Hate %>% 
+    rename("NAME" = "X1",
+           "Number of participating agencies" = "X2",
+           "Population covered" = "X3",
+           "Agencies submitting incident reports" = "X4",
+           "Total number of incidents reported"   = "X5")
+  
+Hate_rate <- Hate %>%  
+  mutate(hate_rate = (`Total number of incidents reported`/`Population covered`)*100000,
+         year = i)
+Hate_from_2008 <- Hate_from_2008 %>% bind_rows(Hate_rate)
+}
+
+Hate_from_2008 <- Hate_from_2008 %>% select(-X6,-X7,-X8,-X9) %>% filter(NAME!="Total")%>% 
+  drop_na()
+
+```
+
+
+
+```{r}
+temp <- Hate_from_2008 %>% 
+  select(NAME, hate_rate , year) %>% 
+  spread(year, hate_rate) 
+
+
+stddev <- apply(temp[,2:length(temp)],1,sd)
+
+temp <- bind_cols(temp, tibble(stddev))
+
+
+```
+```{r}
+temp %>%
+  filter(NAME != "District of Columbia") %>% 
+  arrange(desc(stddev)) %>% head(5)
+```
+As we can see the top 5 highest standard deviation, we most care about these five countries.
+
+```{r}
+ggplot()+
+  geom_line(data = Hate_from_2008 %>% filter(NAME != "District of Columbia"), aes(x = year, y = hate_rate, fill = NAME), color = "Grey")+
+  geom_smooth(data = Hate_from_2008 %>% filter(NAME == "North Dakota"), aes(x = year, y = hate_rate, color = NAME),se= FALSE) +
+  geom_smooth(data = Hate_from_2008 %>% filter(NAME == "South Dakota"), aes(x = year, y = hate_rate, color = NAME),se= FALSE) + 
+  geom_smooth(data = Hate_from_2008 %>% filter(NAME == "Delaware"), aes(x = year, y = hate_rate, color = NAME),se= FALSE) +
+  geom_smooth(data = Hate_from_2008 %>% filter(NAME == "Kentucky"), aes(x = year, y = hate_rate, color = NAME),se= FALSE) +
+  geom_smooth(data = Hate_from_2008 %>% filter(NAME == "Alabama"), aes(x = year, y = hate_rate, color = NAME),se= FALSE)
+```
+
