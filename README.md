@@ -36,8 +36,11 @@ In this project, you can expenct to see how I answer the following questions:
   * [GINI index](https://factfinder.census.gov/bkmk/table/1.0/en/ACS/17_1YR/B19083/0100000US.04000)
   * [Pct. of pop. that is non-citizen](https://www.kff.org/a4327ef/)
   * [Avg. annual hate crimes per 100k pop.](https://ucr.fbi.gov/hate-crime/2017/topic-pages/jurisdiction)
-  And then combine these variables to one dataframe
+  And then combine these variables to one dataframe.
 
+## Explortary Data Analysis
+
+TBD...
 
 ### Environment
 
