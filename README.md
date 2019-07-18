@@ -31,28 +31,22 @@ In this project, you can expenct to see how I answer the following questions:
 * 5. using the FBI hate crimes website, gather the aggregate number of hate crimes for each year since 2008 and create a plot that displays the change in hate crimes per 100k over time.
 
 
-## Data
-
-  We will use the data from 2016 ACS 5-year data for Census variables and 2017 data for
-  
-  * [GINI index](https://factfinder.census.gov/bkmk/table/1.0/en/ACS/17_1YR/B19083/0100000US.04000)
-  * [Pct. of pop. that is non-citizen](https://www.kff.org/a4327ef/)
-  * [Avg. annual hate crimes per 100k pop.](https://ucr.fbi.gov/hate-crime/2017/topic-pages/jurisdiction)
-  
-  And then combine these variables to one dataframe.
-
-## Explortary Data Analysis
-
-TBD...
-
 ### Environment
 
 We will mainly use R studio and the version of R for this project is 3.6.0. And use the packages of tidyverse, tidycensus and ggplot
 
-```r
+```{r include=FALSE, warning=FALSE, message=FALSE}
+library(tm)
+library(SnowballC)
+library(wordcloud)
+library(RColorBrewer)
 library(tidyverse)
 library(tidycensus)
-library(ggplot)
+library(stargazer)
+library(ggplot2)
+library(gganimate)
+library(ggrepel)
+library(reshape2)
 ```
 
 These are all the packages for this project you can install in this way:
@@ -66,6 +60,60 @@ install.packages("ggplot")
 ```
 
 And after these steps, we are good to go!
+
+## Data
+
+  We will use the data from 2016 ACS 5-year data for Census variables and 2017 data for
+  
+  * [GINI index](https://factfinder.census.gov/bkmk/table/1.0/en/ACS/17_1YR/B19083/0100000US.04000)
+  * [Pct. of pop. that is non-citizen](https://www.kff.org/a4327ef/)
+  * [Avg. annual hate crimes per 100k pop.](https://ucr.fbi.gov/hate-crime/2017/topic-pages/jurisdiction)
+  * [Jewish and Democrat](https://www.gallup.com/home.aspx)
+  
+  And then combine these variables to one dataframe.
+
+## Explortary Data Analysis
+
+Recent years, the data shows that hate crime is increasing. In order to figure out what influenes the hate crime. We will examine the potential causes/ correlates of hate crimes in the United States. 
+
+The Data comes from the Kaiser Family Foundation, FBI, and U.S. Census, as well as the proportion of the democrat and Jewish of the state- level.
+
+### Glimpse of the Hate Crime
+
+At the very begining, I randomly grab the article about the hate crime from website and use Natural Language Process to see what causes people have the hate crime and in what situation people will think about the hate crime:
+
+![CloudWord](https://github.com/wang8063/DPSS_Summer_Capstone/blob/master/IMAGES/WechatIMG2.jpeg)
+
+(You really hate trump, don’t you?)
+
+We can see the words: University, Muslim, State, etc are very common in the hate crime. Thus, I will use the varibles about degree, race, and religous from the state level and build our regression model. 
+
+In order to build our model, we need to load all of the variables we need and try to combine them in a single dataframe:
+
+### Loading data:
+
+At first I loaded the acs data of 2016 by the state level which includes the total population. By using the total population we can get unemploy rate,  only high school degree rate, and white people below the poverty line rate, and the people who has the median household income rate.
+
+### Extract the highest and lowest hate crimes for state:
+
+![Highest](https://github.com/wang8063/DPSS_Summer_Capstone/blob/master/IMAGES/Highest%20Average%20Annual%20Hate%20Crimes.png)
+![Lowest](https://github.com/wang8063/DPSS_Summer_Capstone/blob/master/IMAGES/Lowest%20Average%20Annual%20Hate%20Crimes.png)
+
+### The trend of the hate crime from 2012- 2016
+
+![trend](https://github.com/wang8063/DPSS_Summer_Capstone/blob/master/IMAGES/Hate%20Crime%20Changes%20by%20State(2008-2017).png)
+
+### The Hate Crime over all the USA
+
+![Whole USA](https://github.com/wang8063/DPSS_Summer_Capstone/blob/master/IMAGES/Hate%20Crime%20in%20USA.png)
+
+## Model
+
+![stargazer table]()
+
+## gganimation
+
+![Animation!](https://github.com/wang8063/DPSS_Summer_Capstone/blob/master/IMAGES/file17d1025388fca.gif)
 
 ## Authors
 
