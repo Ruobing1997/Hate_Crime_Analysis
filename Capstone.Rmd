@@ -6,16 +6,17 @@ output:
     fig_caption: true
     latex_engine: pdflatex
     template: ~/Desktop/caps/svm-latex-ms.tex
-title: "Policy Memo about the Hate Crime in the USA"
-thanks: "Dan Snow (https://github.com/dfsnow). **Current version**: `r format(Sys.time(), '%B %d, %Y')`"
+title: "Hate Crimes in the USA"
 author:
 - name: Ruobing Wang
   affiliation: Harris Public Policy
+abstract: "This is the Capsone Project in 2019 designed by Dan Snow"
+keywords: "Hate Crime"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
 geometry: margin=1in
 fontfamily: mathpazo
 fontsize: 11pt
-# spacing: double
-endnote: no
+spacing: double
 ---
 
 ```{r setup, include=FALSE}
@@ -38,21 +39,17 @@ library(reshape2)
 
 # Investigation of Hate Crimes
 
-## Background:
+## Background: 
 
-Recent years, the data shows that hate crime is increasing. In order to figure out what influenes the hate crime. We will examine the potential causes/ correlates of hate crimes in the United States. 
+Recent years, the data shows that hate crime is increasing. To figure out what influences the hate crime. We will examine the potential causes/ correlates of hate crimes in the United States. The Data comes from the Kaiser Family Foundation, FBI, and U.S. Census, as well as the proportion of the democrat and Jewish of the state- level. 
 
-The Data comes from the Kaiser Family Foundation, FBI, and U.S. Census, as well as the proportion of the democrat and Jewish of the state- level.
+## Purpose
 
-The purpose of this policy is to establish guidelines
-for identifying and investigating hate crimes and assisting
-victimized individuals and communities. A swift and strong
-response by law enforcement can help stabilize and calm
-the community as well as aid in a victim's recovery.
+The purpose of this policy is to establish guidelines for identifying and investigating hate crimes and assisting victimized individuals and communities. A swift and strong response by law enforcement can help stabilize and calm the city as well as aid in a victim's recovery.
 
 ## Glimpse of the Hate Crime:
 
-At the very begining, I randomly grab the article about the hate crime from website and use Natural Language Process to see what causes people have the hate crime and in what situation people will think about the hate crime:
+At the very beginning, I randomly grab the article about the hate crime from the website and use Natural Language Process to see what causes people have the hate crime and in what situation people will think about the hate crime:
 
 ```{r, echo = FALSE, warning=FALSE, message=FALSE}
 text <- readLines("/Users/wangruobing/Desktop/caps/20170816_Documenting_Hate - Data.csv")
@@ -77,13 +74,55 @@ wordcloud(words = d$word, freq = d$freq, min.freq = 1,
           colors=brewer.pal(20, "Dark2"))
 ```
 
-We can see the words: University, Muslim, State, etc are very common in the hate crime. Thus, I will use the varibles about degree, race, and religous from the state level and build our regression model. 
+We can see the words: University, Muslim, State, etc. are very common in the hate crime. Thus, I will use the variables about the degree, race, and religious from the state level and build our regression model. 
+  
+To build our model, we need to load all of the variables we need and try to combine them in a single data frame: 
+  
+## Definitions about Variables
 
-In order to build our model, we need to load all of the variables we need and try to combine them in a single dataframe:
+Let's talk about the definition of bias and hate crime:
+
+Bias: A preformed negative opinion or attitude toward
+a group of persons based on their race, religion, disability,
+sexual orientation, ethnicity, gender, or gender identity
+
+Hate Crime: A crime in which the defendant
+intentionally selects a victim, or in the case of a property
+crime, the property that is the object of the crime, because
+of the actual or perceived race, color, religion, national
+origin, ethnicity, gender, gender identity, disability, or
+sexual orientation of any person. Most states and the
+District of Columbia also have hate crime laws. State
+statutes should be checked for relevant definitions and
+crime categories.
+
+Religious Group: A group of persons who share the
+same religious beliefs regarding the origin and purpose
+of the universe and the existence or nonexistence of
+a supreme being. Examples include Catholic, Jewish,
+Protestant, Muslim, Sikh, Hindu, and atheist
+
+Race: A group of persons who possess common
+physical characteristics, for example, color of skin,
+eyes, and/or hair; facial features, and so forth, which are
+genetically transmitted by descent and heredity and that
+distinguish them as a distinct division of humankind.
+Examples include Asians, blacks or African Americans,
+and whites.
+
+Ideology Party: The Democratic-Republican Party (formally called the Republican Party) was an American political party formed by Thomas Jefferson and James Madison around 1792 to oppose the centralizing policies of the new Federalist Party run by Alexander Hamilton, who was Secretary of the Treasury and chief architect of George Washington's administration.
 
 ## Exploratory Data Analysis:
+In this part, I will talk about how I load the data and will give a breifly overview of the data.
 
-At first I loaded the acs data of 2016 by the state level which includes the total population. By using the total population we can get unemploy rate, only high school degree rate, and white people below the poverty line rate, and the people who has the median household income rate. And then, I loaded the data of gini index which can enhance the income inequality. And, similarly, loading the data of the non citizen. At last, combine all the datasets we collect together. My goal is creating a dataset which is a panel data from 2012-2016. Also, for plotting, I will create a Hate Crime data from 2008- 2017.
+At first, I loaded the ACS data of 2016 by the state level, which includes the total population. By using the entire community, we can get the unemploy rate, only a high school degree rate, and white people below the poverty line rate, and the people who have the median household income rate. And then, I loaded the data of the Gini index, which can enhance the income inequality. And, similarly, loading the data of the noncitizen. At last, combine all the datasets we collect together. My goal is creating a dataset, which is a panel data from 2012-2016. Also, for plotting, I will create a Hate Crime data from 2008- 2017.
+  
+When I collected the data, I found the potential bias is from the following two parts:
+  
+The data about the annual hate crimes we are using is from the FBI, which collected from law enforcement agencies. However, these data are collected spontaneously which means the data can be potentially fake or not precise. Also, we do not have the data from Hawaii, and these data are collected on only prosecutable hate crimes. Sometimes the hate crime is complicated to characterize the hate crime.  
+    
+On the other hand, the data from the Southern Poverty Law Center combine both hate crimes and hate incidents, but the news reports that strengthen hate after the election may encourage people to report incidents that they would not have reported which will cause awareness bias. Do not even say some local officials do not have the training to tell what the hate crime is.
+
 
 ```{r include = FALSE}
 #loading acs data
@@ -158,21 +197,21 @@ final <- table_rate %>% left_join(gini, by = c("NAME"= "Geography")) %>%
 ```
 
 
-```{r plot, echo= FALSE}
+```{r plot, echo= FALSE, warning=FALSE, message=FALSE}
 #Plotting
 ggplot()+
   geom_sf(data = final, aes(color = hate_rate, fill = hate_rate))+
   scale_color_distiller(palette = "Spectral", guide = FALSE)+
-  scale_fill_distiller(palette = "Spectral",name = "Avg. Thefts\nPer Capita\nPer Year")+
+  scale_fill_distiller(palette = "Spectral",name = "Avg. Hate Crime\nPer 100k\nPer Year")+
   theme_void()+
   labs(title = "Hate Crime in USA (2017)",
        subtitle = "Avg annual hate crime per 100k residents")+
-  ggsave("Hate Crime in USA.png")
+  ggsave("Hate Crime in USA.png",width = 4, height = 4)
 ```
 
-Here are the highest and the lowest hate crimes data:
 
-```{r echo = FALSE}
+
+```{r echo = FALSE, warning=FALSE, message=FALSE}
 final %>% group_by(hate_rate) %>%
 arrange(desc(hate_rate)) %>% 
 head(5) -> top5Hate
@@ -183,21 +222,18 @@ head(5) -> low5Hate
 
 par(mfrow = c(2,2))
 
-ggplot(top5Hate, aes(NAME, hate_rate, fill =hate_rate )) + 
-  geom_col(show.legend = FALSE) + 
+ggplot() + 
+  geom_col(top5Hate, mapping = aes(NAME, hate_rate),show.legend = FALSE) + 
+  geom_col(low5Hate, mapping =aes(NAME, hate_rate),show.legend = FALSE)+
   xlab("State") + 
   ylab("Average Hate Crimes") + 
   ggtitle("Highest Average Annual Hate Crimes")+
-  ggsave("Highest Average Annual Hate Crimes.png")
+  ggsave("Highest Average Annual Hate Crimes.png",width = 6, height = 4)
 
-ggplot(low5Hate, aes(NAME, hate_rate, fill =hate_rate )) + 
-  geom_col(show.legend = FALSE) + 
-  xlab("State") + 
-  ylab("Average Hate Crimes") +
-  ggtitle("Lowest Average Annual Hate Crimes")+
-  ggsave("Lowest Average Annual Hate Crimes.png")
 
 ```
+
+In some states, in recent years, the hate crime has a huge fluctuation, and some states suffering high hate crime rate. We can see that Kentucky has a severe problem in the hate crime, and Massachusetts New Jersey, Vermont, and Washington have the highest average annual hate crimes. Also, for the state, Alabama, North Dakota, etc. They have a vast difference year to year. 
 
 ```{r warning=FALSE, message=FALSE, include=FALSE}
 # loading data from 2012 - 2015
@@ -259,7 +295,7 @@ table <- bind_rows(table,table_all)
 table <- table %>% select(-X6,-X7,-X8,-X9) %>% filter(NAME!="District of Columbia")
 ```
 
-```{r warining=FALSE, message=FALSE, include=FALSE}
+```{r warining=FALSE,message=FALSE, include=FALSE}
 
 Hate_from_2008 <- tibble()
 for (i in c(2008:2017)){
@@ -283,9 +319,7 @@ Hate_from_2008 <- Hate_from_2008 %>% select(-X6,-X7,-X8,-X9) %>% filter(NAME!="T
 
 ```
 
-
-
-```{r include=FALSE}
+```{r include=FALSE, warining=FALSE, message=FALSE}
 temp <- Hate_from_2008 %>% 
   select(NAME, hate_rate , year) %>% 
   spread(year, hate_rate) 
@@ -298,15 +332,15 @@ temp <- bind_cols(temp, tibble(stddev))
 
 ```
 
-```{r echo = FALSE, warning=FALSE, message=FALSE}
-temp %>%
+```{r include = FALSE, warning=FALSE, message=FALSE}
+head_5 <- temp %>%
   filter(NAME != "District of Columbia") %>% 
   arrange(desc(stddev)) %>% head(5)
 ```
 
-As we can see the top 5 highest standard deviation, we most care about these five countries.
-
 ```{r echo= FALSE,warning=FALSE, message=FALSE}
+#Here are the top 5 state with the highest standard deviation, we most care about these five countries.
+
 ggplot()+
   geom_line(data = Hate_from_2008 %>% filter(NAME != "District of Columbia"), aes(x = year, y = hate_rate, fill = NAME), color = "Grey")+
   geom_smooth(data = Hate_from_2008 %>% filter(NAME == "North Dakota"), aes(x = year, y = hate_rate, color = NAME),se= FALSE) +
@@ -317,21 +351,20 @@ ggplot()+
   ggsave("Hate Crime Changes by State(2008-2017).png")
 ```
 
-The additional two vairables I chose are :
 
-* 1. the population of Jewish
-* 2. the population of Democrat
 
-```{r include=FALSE}
+```{r include=FALSE, warning=FALSE, message=FALSE}
 #load the data from Gallup to get the jewish
-
+#The additional two vairables I chose are :
+#* 1. the population of Jewish
+#* 2. the population of Democrat
 Gallup_demo_republic <- read_csv("/Users/wangruobing/Desktop/caps/GallupAnalytics_Export_20190717_105917.csv", skip = 7) %>% select(c(-Demographic, -`Demographic Value`))
 Gallup_pop_religion <- read_csv("/Users/wangruobing/Desktop/caps/GallupAnalytics_Export_20190717_110938.csv", skip = 7) %>% select(c(-Demographic, -`Demographic Value`))
 Gallup_demo_republic <- Gallup_demo_republic[,2:8]
 Gallup_pop_religion <- Gallup_pop_religion[,2:8]
 ```
 
-```{r include=FALSE}
+```{r include=FALSE, warning=FALSE, message=FALSE}
 #table_all includes all of the information we collect so far. Including religion and politicak proportion
 table_all <- table %>% 
   left_join(Gallup_demo_republic, by = c("NAME" = "Geography", "year"="Time"))%>%
@@ -348,7 +381,10 @@ table_all <- table_all %>%
          )
 ```
 
-Before we do the regression, let's see the relationship between the variables:
+But why? What kind of factors influence these states? To solve this question, I create a regression model. 
+
+Before creating the model, we need to check the correlation between each variable we will use:
+
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
 
 cor_test <- table_all %>%
@@ -386,14 +422,18 @@ theme(
   ggsave("correlation.png")
 ```
 
-The corelations are:  TBD,,,
-
-
+It is no surprise to see that the white people who have meager income related to the median income but, surprisingly, the Gini index has no relationship with people who own high school degree only. I think this is suspicious and keep this idea in mind.
 
 ## Models:
 
+```{r include = FALSE}
+#remove the NA value state: eg: Puerto Rico
+table_all_drop_na <- table_all %>% drop_na()
+```
+
+
 ```{r include=FALSE}
-mod1 = lm(hate_rate ~ umemploy_rate+ HSonly_rate+ whitepo_rate+ notwhite_rate+ med_income+ `Estimate; Gini Index`+ non_civ_rate+ Democrat+ Jewish+ as.factor(year), data = table_all)
+mod1 = lm(hate_rate ~ umemploy_rate+ HSonly_rate+ whitepo_rate+ notwhite_rate+ med_income+ `Estimate; Gini Index`+ non_civ_rate+ Democrat+ Jewish+ as.factor(year)+ as.factor(NAME), data = table_all_drop_na)
 ```
 
 ```{r echo=FALSE, warning=FALSE, message=FALSE}
@@ -401,41 +441,32 @@ par(mfrow = c(2,2))
 plot(mod1)
 ```
 
-The plot is actually pretty good, thus we can use mutie linear regression.
+These plots are pretty good, except there are a few of the outliers. Thus, we can use linear regression here. To see whether do we need the interaction term or indicator, and the variables make sense, I make four models here. The first model does not include any indicator and interaction term. The second model includes all the variables' square. The third model consists of two possible interaction term. The fourth model is the model I create to see if we have the overfitting problem. Also, all of the models include the time fixed effect and state fixed effect since I create panel data before. Here is how the table looks like:
 
 ```{r include=FALSE}
-mod2 = lm(hate_rate ~ umemploy_rate+ I(umemploy_rate^2)+ HSonly_rate+ I(HSonly_rate^2)+ whitepo_rate+ I(whitepo_rate^2)+ notwhite_rate+I(notwhite_rate^2)+ med_income + I(med_income^2)+ `Estimate; Gini Index`+ I(`Estimate; Gini Index`^2) + non_civ_rate +I(non_civ_rate^2)+ Democrat+ I(Democrat^2)+Jewish+I(Jewish^2)+ as.factor(year), data = table_all)
-summary(mod2)
+mod2 = lm(hate_rate ~ umemploy_rate+ I(umemploy_rate^2)+ HSonly_rate+ I(HSonly_rate^2)+ whitepo_rate+ I(whitepo_rate^2)+ notwhite_rate+I(notwhite_rate^2)+ med_income + I(med_income^2)+ `Estimate; Gini Index`+ I(`Estimate; Gini Index`^2) + non_civ_rate +I(non_civ_rate^2)+ Democrat+ I(Democrat^2)+Jewish+I(Jewish^2)+ as.factor(year)+as.factor(NAME), data = table_all)
 ```
 
 ```{r include=FALSE}
+
 # With the interaction term
-mod3 = lm(hate_rate ~ umemploy_rate+ I(umemploy_rate^2)+ HSonly_rate+ I(HSonly_rate^2)+ whitepo_rate+ I(whitepo_rate^2)+ notwhite_rate+I(notwhite_rate^2)+ med_income + I(med_income^2)+ `Estimate; Gini Index`+ I(`Estimate; Gini Index`^2) + non_civ_rate +I(non_civ_rate^2)+ Democrat+ I(Democrat^2)+Jewish+I(Jewish^2)+ non_civ_rate:Jewish+ whitepo_rate:notwhite_rate + as.factor(year), data = table_all)
-summary(mod3)
+mod3 = lm(hate_rate ~ umemploy_rate+ I(umemploy_rate^2)+ HSonly_rate+ I(HSonly_rate^2)+ whitepo_rate+ I(whitepo_rate^2)+ notwhite_rate+I(notwhite_rate^2)+ med_income + I(med_income^2)+ `Estimate; Gini Index`+ I(`Estimate; Gini Index`^2) + non_civ_rate +I(non_civ_rate^2)+ Democrat+ I(Democrat^2)+Jewish+I(Jewish^2)+ non_civ_rate:Jewish+ whitepo_rate:notwhite_rate + as.factor(year)+ as.factor(NAME), data = table_all)
 ```
-
 
 
 ```{r include=FALSE}
-step(mod3, direction = 'backward', k = 2)
+step(mod1, direction = "backward", k = 2)
+mod4 = lm(formula = hate_rate ~ HSonly_rate + whitepo_rate + `Estimate; Gini Index` + 
+    as.factor(year) + as.factor(NAME), data = table_all_drop_na)
 ```
-
-```{r include=FALSE}
-mod4 = lm(formula = hate_rate ~ umemploy_rate + I(umemploy_rate^2) + 
-    HSonly_rate + whitepo_rate + notwhite_rate + I(notwhite_rate^2) + 
-    med_income + `Estimate; Gini Index` + non_civ_rate + I(non_civ_rate^2) + 
-    Democrat + I(Democrat^2) + Jewish + as.factor(year) + whitepo_rate:notwhite_rate, 
-    data = table_all)
-
-```
-
-Here is our table looks like:
 
 ```{r message=FALSE, warning=FALSE, results='asis', echo=FALSE}
 library(stargazer)
 stargazer(mod1, mod2, mod3, mod4,type = "latex", 
           title = "Regression Result",
           single.row = TRUE,
+          header = FALSE,
+          report = "vc*", 
           covariate.labels = c("umemploy rate", "umemploy rate square", 
                                "HS degree only rate", "HS degree only rate square",
                                "white poverty rate", "white poverty rate square",
@@ -447,73 +478,46 @@ stargazer(mod1, mod2, mod3, mod4,type = "latex",
                                "Jewish rate ","Jewish rate square"
                                
                                 ),
+          omit        = "as.factor",
           dep.var.caption  = "Hate Crime Factors",
           column.labels   = c("Non Indicator", "Indicator", "Interaction Term", "Filtered"),
           column.separate = c(1, 1, 1, 1),
-          font.size = "small"
+          font.size = "small",
+          column.sep.width = "-12pt"
           )
 
 ```
 
-mod1 is the simpliest model,
-mod2 includes the indicators,
-mod3 has interaction terms,
-mod4 is I test whether we overfit the model and create a mod4 after I filter some variables out,
+From the result, we can barely see that there is a variable becomes significant after we add terms from the first three models. Instead, model 1 has the largest adjusted R square compare with the other two models (except “Filtered”). And also with a little bit lost of the R square, other models include more terms. After I run the AIC to filter some variables, I only have a litter improvement of the adjusted R squared. I want to say model 1, which has no indicator and interaction term performs best in this situation.
+  
+From the regression model, we can see the Gini index and white poverty people rate are the most two significant variables here. It is because these two are both the critical criteria for income inequality, which is the most influenceable factor for the hate crime.
 
+## Maps for Wihter Poverty Prople and Hate rate:
 
-## Definitions about Variables
-
-Bias: A preformed negative opinion or attitude toward
-a group of persons based on their race, religion, disability,
-sexual orientation, ethnicity, gender, or gender identity
-
-Hate Crime: A crime in which the defendant
-intentionally selects a victim, or in the case of a property
-crime, the property that is the object of the crime, because
-of the actual or perceived race, color, religion, national
-origin, ethnicity, gender, gender identity, disability, or
-sexual orientation of any person. Most states and the
-District of Columbia also have hate crime laws. State
-statutes should be checked for relevant definitions and
-crime categories.
-
-Religious Group: A group of persons who share the
-same religious beliefs regarding the origin and purpose
-of the universe and the existence or nonexistence of
-a supreme being. Examples include Catholic, Jewish,
-Protestant, Muslim, Sikh, Hindu, and atheist
-
-Race: A group of persons who possess common
-physical characteristics, for example, color of skin,
-eyes, and/or hair; facial features, and so forth, which are
-genetically transmitted by descent and heredity and that
-distinguish them as a distinct division of humankind.
-Examples include Asians, blacks or African Americans,
-and whites.
-
-Ideology Party: The Democratic-Republican Party (formally called the Republican Party) was an American political party formed by Thomas Jefferson and James Madison around 1792 to oppose the centralizing policies of the new Federalist Party run by Alexander Hamilton, who was Secretary of the Treasury and chief architect of George Washington's administration.
-
-## Maps for Democrat and Hate rate
-
-```{r warining=FALSE, message=FALSE,echo=FALSE}
+```{r ,echo=FALSE,warning=FALSE, message=FALSE}
 ggplot(data = table_all)+
-  geom_jitter(aes(x = Democrat, y = hate_rate,size = `Estimate; Gini Index`))+
-   geom_smooth(aes(x = Democrat, y = hate_rate), method = "auto", se = FALSE)
+  geom_jitter(aes(x = whitepo_rate, y = hate_rate,size = `Estimate; Gini Index`, color = NAME%in%head_5$NAME),alpha = 0.5)+
+  labs(colour = "5 states with\nlargest Hate Crime rate",
+       size = "Gini Index",
+       title = "The Relationship between the number of Whiter Poor and Hate Rate",
+       subtitle = "As well as the Gini Index and the 5 states with the largest hate crime rate")+
+  xlab("The rate of white poverty people") +
+  ylab("The Hate Rate")+
+  geom_smooth(aes(x = whitepo_rate, y = hate_rate), method = "auto", se = FALSE)
 ```
 
+As we can see, the regression line shows that the hate rate has the positive relationship with the poor people, and the five states which have the most massive hate rate have a significant point which means the Gini index is extensive and the income inequality is severe in these state which causes serious hate crime problem.
 
-```{r}
-# library(ggplot2)
-# library(gganimate)
-# library(ggrepel)
-# g <- ggplot(table_all, aes(Democrat, hate_rate, size = `Estimate; Gini Index`, colour = NAME)) +
-#   geom_point(alpha = 0.7, show.legend = FALSE) +
-#   geom_label_repel(aes( label = NAME), hjust = 4, nudge_x = 90, show.legend = FALSE)+
-#   scale_x_log10() +
-#   labs(title = 'Year: {frame_time}', x = 'Democrat', y = 'hate_rate') +
-#   transition_time(year) +
-#   ease_aes('linear')
-# animate(g, nframes = 400, duration = 20, fps = 20, end_pause = 5, rewind = TRUE)
+## Recommendations
 
-```
+Our goal is to reduce or fix income inequality. Thus, we can do this from the following policies:
 
+Education policies matter. We can see from the correlation table; high degree always leads to top pay.
+
+Well-designed labor market policies and institutions.
+
+Removing product market regulations that stifle competition can reduce labor income inequality by boosting employment.
+
+Tax and transfer systems play a crucial role in lowering overall income inequality. 
+
+The personal income tax. We can apply the tax rate classification system.
