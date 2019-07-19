@@ -106,7 +106,7 @@ On the other hand, the data from the Southern Poverty Law Center combine both ha
 
 ## The Hate Crime over all the USA
 
-![Whole USA](https://github.com/wang8063/DPSS_Summer_Capstone/blob/master/IMAGES/Hate%20Crime%20in%20USA.png)
+![Whole USA]()
 
 In some states, in recent years, the hate crime has a huge fluctuation, and some states suffering high hate crime rate. We can see that Kentucky has a severe problem in the hate crime, and Massachusetts New Jersey, Vermont, and Washington have the highest average annual hate crimes. Also, for the state, Alabama, North Dakota, etc. They have a vast difference year to year.
 
