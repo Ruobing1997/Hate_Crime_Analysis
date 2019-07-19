@@ -158,3 +158,7 @@ Our goal is to reduce or fix income inequality. Thus, we can do this from the fo
 
 * **Ruobing Wang** - *Initial work* - [Ruobing Wang's website](https://github.com/wang8063)
 
+## Thanks
+
+* **Dan Snow** [!Dan's Github](https://github.com/dfsnow)
+
