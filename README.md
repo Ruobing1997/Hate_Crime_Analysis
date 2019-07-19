@@ -4,9 +4,13 @@
   
   This is the capstone of DPSS in 2019 about Hate Crime in USA which is designed by Daniel Snow
 
-## Main Purpose 
+## Background:
 
-  Recent years, according to the FBI or Justice Research and Statistics Association data published, we can see the hate crime rate is increasing and each year, across America, an average of 250,000 people are victimized by hate crimes – criminal expressions of bigotry that terrorize entire communities and fray the social fabric of our country. In order to figure out what is the most important feature in the hate crime and in what extend this feature influences the hate crime rate, we run multi linear regression from income equality, degree, race raio, religious, citizen and non- citizen ratio to build the regression model. As well as demographat and republican ratio and ...
+  Recent years, according to the FBI or Justice Research and Statistics Association data published, we can see the hate crime rate is increasing and each year, across America, an average of 250,000 people are victimized by hate crimes – criminal expressions of bigotry that terrorize entire communities and fray the social fabric of our country. In order to figure out what is the most important feature in the hate crime and in what extend this feature influences the hate crime rate, we run multi linear regression from income equality, degree, race raio, religious, citizen and non- citizen ratio to build the regression model. As well as demographat and republican ratio and Jewish people.
+  
+  The purpose of making such a policy is to establish guidelines for identifying and investigating hate crimes and assisting victimized individuals and communities. A swift and strong response by law en- forcement can help stabilize and calm the city as well as aid in a victim’s recovery.
+
+## Main Purpose 
   
   The following is the purpose of this capstone:
 
@@ -61,6 +65,10 @@ install.packages("ggplot")
 
 And after these steps, we are good to go!
 
+## Loading data:
+
+At first I loaded the acs data of 2016 by the state level which includes the total population. By using the total population we can get unemploy rate,  only high school degree rate, and white people below the poverty line rate, and the people who has the median household income rate.
+
 ## Data
 
   We will use the data from 2016 ACS 5-year data for Census variables and 2017 data for
@@ -72,13 +80,7 @@ And after these steps, we are good to go!
   
   And then combine these variables to one dataframe.
 
-## Explortary Data Analysis
-
-Recent years, the data shows that hate crime is increasing. In order to figure out what influenes the hate crime. We will examine the potential causes/ correlates of hate crimes in the United States. 
-
-The Data comes from the Kaiser Family Foundation, FBI, and U.S. Census, as well as the proportion of the democrat and Jewish of the state- level.
-
-### Glimpse of the Hate Crime
+## Glimpse of the Hate Crime
 
 At the very begining, I randomly grab the article about the hate crime from website and use Natural Language Process to see what causes people have the hate crime and in what situation people will think about the hate crime:
 
@@ -90,11 +92,24 @@ We can see the words: University, Muslim, State, etc are very common in the hate
 
 In order to build our model, we need to load all of the variables we need and try to combine them in a single dataframe:
 
-### Loading data:
+## Exploratory Data Analysis:
 
-At first I loaded the acs data of 2016 by the state level which includes the total population. By using the total population we can get unemploy rate,  only high school degree rate, and white people below the poverty line rate, and the people who has the median household income rate.
+In this part, I will talk about how I load the data and will give a breifly overview of the data.
 
-### Extract the highest and lowest hate crimes for state:
+At first, I loaded the ACS data of 2016 by the state level, which includes the total population. By using the entire community, we can get the unemploy rate, only a high school degree rate, and white people below the poverty line rate, and the people who have the median household income rate. And then, I loaded the data of the Gini index, which can enhance the income inequality. And, similarly, loading the data of the noncitizen. At last, combine all the datasets we collect together. My goal is creating a dataset, which is a panel data from 2012-2016. Also, for plotting, I will create a Hate Crime data from 2008- 2017.
+
+When I collected the data, I found the potential bias is from the following two parts:
+
+The data about the annual hate crimes we are using is from the FBI, which collected from law enforcement agencies. However, these data are collected spontaneously which means the data can be potentially fake or not precise. Also, we do not have the data from Hawaii, and these data are collected on only prosecutable hate crimes. Sometimes the hate crime is complicated to characterize the hate crime.
+
+On the other hand, the data from the Southern Poverty Law Center combine both hate crimes and hate incidents, but the news reports that strengthen hate after the election may encourage people to report incidents that they would not have reported which will cause awareness bias. Do not even say some local officials do not have the training to tell what the hate crime is.
+
+## The Hate Crime over all the USA
+
+![Whole USA](https://github.com/wang8063/DPSS_Summer_Capstone/blob/master/IMAGES/Hate%20Crime%20in%20USA.png)
+
+In some states, in recent years, the hate crime has a huge fluctuation, and some states suffering high hate crime rate. We can see that Kentucky has a severe problem in the hate crime, and Massachusetts New Jersey, Vermont, and Washington have the highest average annual hate crimes. Also, for the state, Alabama, North Dakota, etc. They have a vast difference year to year.
+
 
 ![Highest](https://github.com/wang8063/DPSS_Summer_Capstone/blob/master/IMAGES/Highest%20Average%20Annual%20Hate%20Crimes.png)
 ![Lowest](https://github.com/wang8063/DPSS_Summer_Capstone/blob/master/IMAGES/Lowest%20Average%20Annual%20Hate%20Crimes.png)
@@ -103,18 +118,39 @@ At first I loaded the acs data of 2016 by the state level which includes the tot
 
 ![trend](https://github.com/wang8063/DPSS_Summer_Capstone/blob/master/IMAGES/Hate%20Crime%20Changes%20by%20State(2008-2017).png)
 
-### The Hate Crime over all the USA
+But why? What kind of factors influence these states? To solve this question, I create a regres- sion model.
+Before creating the model, we need to check the correlation between each variable we will use:
 
-![Whole USA](https://github.com/wang8063/DPSS_Summer_Capstone/blob/master/IMAGES/Hate%20Crime%20in%20USA.png)
+![Correlation table]()
+
+It is no surprise to see that the white people who have meager income related to the median income but, surprisingly, the Gini index has no relationship with people who own high school degree only. I think this is suspicious and keep this idea in mind.
 
 ## Model
 
 ![stargazer table]()
 
+From the result, we can see that the income inequality play an important role in the Hate Crime Rate.
+
 ## gganimation
 
 ![Animation!](https://github.com/wang8063/DPSS_Summer_Capstone/blob/master/IMAGES/file17d1025388fca.gif)
 
+![LGBT]()
+
+## Recommendations
+
+Our goal is to reduce or fix income inequality. Thus, we can do this from the following policies: 
+
+ - Education policies matter. We can see from the correlation table; high degree always leads to top pay.
+
+ - Well-designed labor market policies and institutions.
+
+ - Removing product market regulations that stifle competition can reduce labor income inequality by boosting employment.
+ 
+ - Tax and transfer systems play a crucial role in lowering overall income inequality. 
+ 
+ - The personal income tax. We can apply the tax rate classification system.
+ 
 ## Authors
 
 * **Ruobing Wang** - *Initial work* - [Ruobing Wang's website](https://github.com/wang8063)
