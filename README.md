@@ -113,6 +113,7 @@ In some states, in recent years, the hate crime has a huge fluctuation, and some
 
 ![Highest](https://github.com/wang8063/DPSS_Summer_Capstone/blob/master/IMAGES/Highest%20Average%20Annual%20Hate%20Crimes.png)
 ![Lowest](https://github.com/wang8063/DPSS_Summer_Capstone/blob/master/IMAGES/Lowest%20Average%20Annual%20Hate%20Crimes.png)
+![overall](https://github.com/wang8063/DPSS_Summer_Capstone/blob/master/IMAGES/Hate%20Crimes%20overall.png)
 
 ### The trend of the hate crime from 2012- 2016
 
@@ -121,21 +122,23 @@ In some states, in recent years, the hate crime has a huge fluctuation, and some
 But why? What kind of factors influence these states? To solve this question, I create a regres- sion model.
 Before creating the model, we need to check the correlation between each variable we will use:
 
-![Correlation table]()
+![Correlation table](https://github.com/wang8063/DPSS_Summer_Capstone/blob/master/IMAGES/correlation.png)
 
 It is no surprise to see that the white people who have meager income related to the median income but, surprisingly, the Gini index has no relationship with people who own high school degree only. I think this is suspicious and keep this idea in mind.
 
 ## Model
 
-![stargazer table]()
+![stargazer table](https://github.com/wang8063/DPSS_Summer_Capstone/blob/master/IMAGES/WechatIMG5.png)
 
 From the result, we can see that the income inequality play an important role in the Hate Crime Rate.
+
+![regression line](https://github.com/wang8063/DPSS_Summer_Capstone/blob/master/IMAGES/WechatIMG6.png)
 
 ## gganimation
 
 ![Animation!](https://github.com/wang8063/DPSS_Summer_Capstone/blob/master/IMAGES/file17d1025388fca.gif)
 
-![LGBT]()
+![LGBT](https://github.com/wang8063/DPSS_Summer_Capstone/blob/master/IMAGES/LGBT%20HATE%20CRIME.gif)
 
 ## Recommendations
 
